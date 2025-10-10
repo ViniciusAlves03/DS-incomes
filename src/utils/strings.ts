@@ -14,9 +14,9 @@ export abstract class Strings {
     }
 
     public static readonly USER: any = {
-        EMAIL_ALREADY_REGISTERED: 'An Expense with this email already registered!',
-        NOT_FOUND: 'Expense not found!',
-        NOT_FOUND_DESCRIPTION: 'Expense not found or already removed. A new operation for the same resource is required!',
+        EMAIL_ALREADY_REGISTERED: 'An Income with this email already registered!',
+        NOT_FOUND: 'Income not found!',
+        NOT_FOUND_DESCRIPTION: 'Income not found or already removed. A new operation for the same resource is required!',
         PASSWORD_NOT_MATCH: 'Password does not match!',
         PASSWORD_NOT_MATCH_DESCRIPTION: 'The old password parameter does not match with the actual user password.',
         PARAM_ID_NOT_VALID_FORMAT: 'Parameter {user_id} is not in valid format!'
@@ -74,10 +74,10 @@ export abstract class Strings {
         NOT_FOUND_DESCRIPTION: 'Image not found or already removed. A new operation for the same resource is required.'
     }
 
-    public static readonly EXPENSE: any = {
-        NOT_FOUND: 'Expense not found!',
-        NOT_FOUND_DESCRIPTION: 'Expense not found or already removed. A new operation for the same resource is required.',
-        CANNOT_BE_REMOVED: 'Expense cannot be removed!',
-        CANNOT_BE_REMOVED_DESC: 'This Expense has associated dependents!',
+    public static readonly INCOME: any = {
+        NOT_FOUND: 'Income not found!',
+        NOT_FOUND_DESCRIPTION: 'Income not found or already removed. A new operation for the same resource is required.',
+        CANNOT_BE_REMOVED: 'Income cannot be removed!',
+        CANNOT_BE_REMOVED_DESC: 'This Income has associated dependents!',
     }
 }

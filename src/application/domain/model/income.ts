@@ -4,7 +4,7 @@ import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
 
-export class Expense extends Entity implements IJSONSerializable, IJSONDeserializable<Expense> {
+export class Income extends Entity implements IJSONSerializable, IJSONDeserializable<Income> {
     private _title?: string
     private _description?: string
     private _amount?: number
@@ -64,7 +64,7 @@ export class Expense extends Entity implements IJSONSerializable, IJSONDeseriali
         this._userId = value
     }
 
-    public fromJSON(json: any): Expense {
+    public fromJSON(json: any): Income {
         if (!json) return this
         if (typeof json === 'string') {
             if (!JsonUtils.isJsonString(json)) {

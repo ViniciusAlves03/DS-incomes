@@ -1,17 +1,17 @@
 import { injectable } from 'inversify'
-import { Expense } from '../../../application/domain/model/expense'
-import { ExpenseEntity } from '../expense.entity'
+import { Income } from '../../../application/domain/model/income'
+import { IncomeEntity } from '../income.entity'
 import { IEntityMapper } from '../../port/entity.mapper.interface'
 
 @injectable()
-export class ExpenseEntityMapper implements IEntityMapper<Expense, ExpenseEntity> {
+export class IncomeEntityMapper implements IEntityMapper<Income, IncomeEntity> {
     public transform(item: any): any {
-        if (item instanceof Expense) return this.modelToModelEntity(item)
+        if (item instanceof Income) return this.modelToModelEntity(item)
         return this.jsonToModel(item)
     }
 
-    public modelToModelEntity(item: Expense): ExpenseEntity {
-        const result: ExpenseEntity = new ExpenseEntity()
+    public modelToModelEntity(item: Income): IncomeEntity {
+        const result: IncomeEntity = new IncomeEntity()
 
         if (item.id !== undefined) result.id = item.id
         if (item.title !== undefined) result.title = item.title
@@ -24,8 +24,8 @@ export class ExpenseEntityMapper implements IEntityMapper<Expense, ExpenseEntity
         return result
     }
 
-    public jsonToModel(json: any): Expense {
-        const result: Expense = new Expense()
+    public jsonToModel(json: any): Income {
+        const result: Income = new Income()
         if (!json) return result
 
         if (json.id !== undefined) result.id = json.id

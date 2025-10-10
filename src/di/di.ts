@@ -1,21 +1,21 @@
 import { Container } from 'inversify'
 import 'reflect-metadata'
 import { App } from '../app'
-import { Expense } from '../application/domain/model/expense'
-import { IExpenseRepository } from '../application/port/expense.repository.interface'
-import { IExpenseService } from '../application/port/expense.service.interface'
-import { ExpenseService } from '../application/service/expense.service'
+import { Income } from '../application/domain/model/income'
+import { IIncomeRepository } from '../application/port/income.repository.interface'
+import { IIncomeService } from '../application/port/income.service.interface'
+import { IncomeService } from '../application/service/income.service'
 import { BackgroundService } from '../background/background.service'
 import { ConnectionFactoryMongodb } from '../infrastructure/database/connection.factory.mongodb'
 import { ConnectionMongodb } from '../infrastructure/database/connection.mongodb'
-import { ExpenseRepoModel } from '../infrastructure/database/schema/expense.schema'
-import { ExpenseEntityMapper } from '../infrastructure/entity/mapper/expense.entity.mapper'
-import { ExpenseEntity } from '../infrastructure/entity/expense.entity'
+import { IncomeRepoModel } from '../infrastructure/database/schema/income.schema'
+import { IncomeEntityMapper } from '../infrastructure/entity/mapper/income.entity.mapper'
+import { IncomeEntity } from '../infrastructure/entity/income.entity'
 import { IConnectionDB } from '../infrastructure/port/connection.db.interface'
 import { IConnectionFactory } from '../infrastructure/port/connection.factory.interface'
 import { IEntityMapper } from '../infrastructure/port/entity.mapper.interface'
-import { ExpenseRepository } from '../infrastructure/repository/expense.repository'
-import { ExpensesController } from '../ui/controllers/expenses.controller'
+import { IncomeRepository } from '../infrastructure/repository/income.repository'
+import { IncomesController } from '../ui/controllers/incomes.controller'
 import { CustomLogger, ILogger } from '../utils/custom.logger'
 import { Identifier } from './identifiers'
 
@@ -35,23 +35,23 @@ class IoC {
         this._container.bind(Identifier.APP).to(App).inSingletonScope()
 
         // Controllers
-        this._container.bind<ExpensesController>(Identifier.EXPENSES_CONTROLLER).to(ExpensesController).inSingletonScope()
+        this._container.bind<IncomesController>(Identifier.INCOMES_CONTROLLER).to(IncomesController).inSingletonScope()
 
         // Services
-        this._container.bind<IExpenseService>(Identifier.EXPENSE_SERVICE).to(ExpenseService).inSingletonScope()
+        this._container.bind<IIncomeService>(Identifier.INCOMES_SERVICE).to(IncomeService).inSingletonScope()
 
         // Repositories
         this._container
-            .bind<IExpenseRepository>(Identifier.EXPENSE_REPOSITORY)
-            .to(ExpenseRepository).inSingletonScope()
+            .bind<IIncomeRepository>(Identifier.INCOME_REPOSITORY)
+            .to(IncomeRepository).inSingletonScope()
 
         // Models
-        this._container.bind(Identifier.EXPENSE_REPO_MODEL).toConstantValue(ExpenseRepoModel)
+        this._container.bind(Identifier.INCOME_REPO_MODEL).toConstantValue(IncomeRepoModel)
 
         // Mappers
         this._container
-            .bind<IEntityMapper<Expense, ExpenseEntity>>(Identifier.EXPENSE_ENTITY_MAPPER)
-            .to(ExpenseEntityMapper).inSingletonScope()
+            .bind<IEntityMapper<Income, IncomeEntity>>(Identifier.INCOME_ENTITY_MAPPER)
+            .to(IncomeEntityMapper).inSingletonScope()
 
         // Background Services
         this._container

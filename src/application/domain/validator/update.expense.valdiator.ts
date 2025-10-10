@@ -1,11 +1,11 @@
 import { ValidationException } from '../exception/validation.exception'
-import { Expense } from '../model/expense'
+import { Income } from '../model/income'
 import { Strings } from '../../../utils/strings'
 import { DateValidator } from './date.validator'
 import { ObjectIdValidator } from './object.id.validator'
 
 export class UpdateExpenseValidator {
-    public static validate(item: Expense): void | ValidationException {
+    public static validate(item: Income): void | ValidationException {
         const fields: Array<string> = []
 
         if (item.id) ObjectIdValidator.validate(item.id)
@@ -19,7 +19,7 @@ export class UpdateExpenseValidator {
 
         if (fields.length > 0) {
             throw new ValidationException('Required fields were not provided...',
-                'Expense validation: '.concat(fields.join(', ')).concat(' is required!'))
+                'Income validation: '.concat(fields.join(', ')).concat(' is required!'))
         }
     }
 }

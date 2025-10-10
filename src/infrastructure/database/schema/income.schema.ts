@@ -1,9 +1,9 @@
 import Mongoose from 'mongoose'
 
-interface IExpenseModel extends Mongoose.Document {
+interface IIncomeModel extends Mongoose.Document {
 }
 
-const expenseSchema = new Mongoose.Schema({
+const incomeSchema = new Mongoose.Schema({
     id: Mongoose.Schema.Types.ObjectId,
     title: String,
     description: String,
@@ -29,4 +29,4 @@ const expenseSchema = new Mongoose.Schema({
         }
     })
 
-export const ExpenseRepoModel = Mongoose.model<IExpenseModel>('Expense', expenseSchema)
+export const IncomeRepoModel = Mongoose.model<IIncomeModel>('Income', incomeSchema)

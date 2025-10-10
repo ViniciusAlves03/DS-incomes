@@ -2,20 +2,20 @@ export abstract class Identifier {
     public static readonly APP: any = Symbol.for('App')
 
     // Controllers
-    public static readonly EXPENSES_CONTROLLER: any = Symbol.for('ExpensesController')
+    public static readonly INCOMES_CONTROLLER: any = Symbol.for('IncomesController')
     public static readonly USERS_EXPENSES_CONTROLLER: any = Symbol.for('UsersExpensesController')
 
     // Services
-    public static readonly EXPENSE_SERVICE: any = Symbol.for('ExpenseService')
+    public static readonly INCOMES_SERVICE: any = Symbol.for('IncomeService')
 
     // Repositories
-    public static readonly EXPENSE_REPOSITORY: any = Symbol.for('ExpenseRepository')
+    public static readonly INCOME_REPOSITORY: any = Symbol.for('IncomeRepository')
 
     // Models
-    public static readonly EXPENSE_REPO_MODEL: any = Symbol.for('ExpenseRepoModel')
+    public static readonly INCOME_REPO_MODEL: any = Symbol.for('IncomeRepoModel')
 
     // Mappers
-    public static readonly EXPENSE_ENTITY_MAPPER: any = Symbol.for('ExpenseEntityMapper')
+    public static readonly INCOME_ENTITY_MAPPER: any = Symbol.for('IncomeEntityMapper')
 
     // Background Services
     public static readonly MONGODB_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryMongodb')

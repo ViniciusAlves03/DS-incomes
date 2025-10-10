@@ -1,7 +1,7 @@
 import { Entity } from './entity'
 
 
-export class ExpenseEntity extends Entity {
+export class IncomeEntity extends Entity {
     public id?: string
     public title?: string
     public description?: string
