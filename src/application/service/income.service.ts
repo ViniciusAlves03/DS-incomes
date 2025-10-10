@@ -64,12 +64,23 @@ export class IncomeService implements IIncomeService {
         }
     }
 
-    public async getIncomeById(expenseId: string, query: IQuery): Promise<Income | undefined> {
+    public async getAllIncomesByUser(query: IQuery): Promise<Array<any>> {
         try {
             const user_id = query.toJSON().filters.user_id
             if (user_id) ObjectIdValidator.validate(user_id)
-            ObjectIdValidator.validate(expenseId);
-            query.addFilter({ _id: expenseId })
+            const incomes: Array<any> = await this._incomeRepository.find(query)
+            return Promise.resolve(incomes)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
+    public async getIncomeById(incomeId: string, query: IQuery): Promise<Income | undefined> {
+        try {
+            const user_id = query.toJSON().filters.user_id
+            if (user_id) ObjectIdValidator.validate(user_id)
+            ObjectIdValidator.validate(incomeId);
+            query.addFilter({ _id: incomeId })
             return this._incomeRepository.findOne(query)
         } catch (err) {
             return Promise.reject(err)

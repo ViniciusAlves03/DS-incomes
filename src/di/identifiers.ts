@@ -3,7 +3,7 @@ export abstract class Identifier {
 
     // Controllers
     public static readonly INCOMES_CONTROLLER: any = Symbol.for('IncomesController')
-    public static readonly USERS_EXPENSES_CONTROLLER: any = Symbol.for('UsersExpensesController')
+    public static readonly USERS_INCOMES_CONTROLLER: any = Symbol.for('UsersIncomesController')
 
     // Services
     public static readonly INCOMES_SERVICE: any = Symbol.for('IncomeService')

@@ -18,6 +18,7 @@ import { IncomeRepository } from '../infrastructure/repository/income.repository
 import { IncomesController } from '../ui/controllers/incomes.controller'
 import { CustomLogger, ILogger } from '../utils/custom.logger'
 import { Identifier } from './identifiers'
+import { UsersIncomesController } from 'ui/controllers/users.incomes.controller'
 
 class IoC {
     private readonly _container: Container
@@ -36,6 +37,7 @@ class IoC {
 
         // Controllers
         this._container.bind<IncomesController>(Identifier.INCOMES_CONTROLLER).to(IncomesController).inSingletonScope()
+        this._container.bind<UsersIncomesController>(Identifier.USERS_INCOMES_CONTROLLER).to(UsersIncomesController).inSingletonScope()
 
         // Services
         this._container.bind<IIncomeService>(Identifier.INCOMES_SERVICE).to(IncomeService).inSingletonScope()
