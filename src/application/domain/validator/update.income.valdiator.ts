@@ -4,7 +4,7 @@ import { Strings } from '../../../utils/strings'
 import { DateValidator } from './date.validator'
 import { ObjectIdValidator } from './object.id.validator'
 
-export class UpdateExpenseValidator {
+export class UpdateIncomeValidator {
     public static validate(item: Income): void | ValidationException {
         const fields: Array<string> = []
 

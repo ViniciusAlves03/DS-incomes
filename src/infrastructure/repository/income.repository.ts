@@ -7,6 +7,7 @@ import { IEntityMapper } from '../port/entity.mapper.interface'
 import { BaseRepository } from './base/base.repository'
 import { ILogger } from '../../utils/custom.logger'
 import { Query } from './query/query'
+import { IQuery } from '../../application/port/query.interface'
 
 
 @injectable()
@@ -21,5 +22,17 @@ export class IncomeRepository extends BaseRepository<Income, IncomeEntity> imple
 
     public findOneById(_id: string): Promise<Income | undefined> {
         return super.findOne(new Query().fromJSON({ filters: { _id } }))
+    }
+
+    public checkUserIncomeExists(userId: string, incomeId: string): Promise<boolean> {
+        const query: IQuery = new Query().fromJSON({
+            filters: { _id: incomeId, userId: userId }
+        })
+
+        return new Promise<boolean>((resolve, reject) => {
+            super.findOne(query)
+                .then(result => resolve(!!result))
+                .catch(err => reject(super.mongoDBErrorListener(err)))
+        })
     }
 }

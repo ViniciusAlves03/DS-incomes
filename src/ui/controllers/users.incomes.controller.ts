@@ -1,6 +1,6 @@
 import HttpStatus from 'http-status-codes'
 import { inject } from 'inversify'
-import { controller, httpGet, httpPost, request, response } from 'inversify-express-utils'
+import { controller, httpDelete, httpGet, httpPatch, httpPost, request, response } from 'inversify-express-utils'
 import { Request, Response } from 'express'
 import { Identifier } from '../../di/identifiers'
 import { IIncomeService } from '../../application/port/income.service.interface'
@@ -50,13 +50,40 @@ export class UsersIncomesController {
     }
 
     @httpGet('/:income_id')
-    public async getCategoryById(@request() req: Request, @response() res: Response): Promise<Response | undefined> {
+    public async getIncomeById(@request() req: Request, @response() res: Response): Promise<Response | undefined> {
         try {
             const query: IQuery = new Query().fromJSON(req.query)
             query.addFilter({ userId: req.params.user_id })
             const result: Income | undefined = await this._incomeService.getIncomeById(req.params.income_id, query)
             if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageIncomeNotFound())
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
+        } catch (err: any) {
+            const handlerError = ApiExceptionManager.build(err)
+            return res.status(handlerError.code)
+                .send(handlerError.toJSON())
+        }
+    }
+
+    @httpPatch('/:income_id')
+    public async updateIncomeUser(@request() req: Request, @response() res: Response): Promise<Response> {
+        try {
+            const income: Income = new Income().fromJSON(req.body)
+            income.id = req.params.income_id
+            income.userId = req.params.user_id
+            const result: Income | undefined = await this._incomeService.update(income)
+            return res.status(HttpStatus.OK).send(result)
+        } catch (err: any) {
+            const handlerError = ApiExceptionManager.build(err)
+            return res.status(handlerError.code)
+                .send(handlerError.toJSON())
+        }
+    }
+
+    @httpDelete('/:income_id')
+    public async removeIncomeUser(@request() req: Request, @response() res: Response): Promise<Response> {
+        try {
+            await this._incomeService.removeIncome(req.params.user_id, req.params.income_id)
+            return res.status(HttpStatus.NO_CONTENT).send()
         } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
