@@ -5,4 +5,6 @@ import { IQuery } from './query.interface'
 
 export interface IIncomeService extends IService<Income> {
     getIncomeById(expenseId: string, query: IQuery): Promise<Income | undefined>
+
+    addIncome(item: Income, userId: string): Promise<Income | undefined>
 }
