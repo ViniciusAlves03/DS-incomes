@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  exp-core:
+    build: .
+    container_name: exp-incomes
+    restart: always
+    ports:
+      - "5004:5004"
+      - "5005:5005"
+    networks:
+      - exp-network
+    env_file:
+      - .env
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "5"
+
+networks:
+  exp-network:
+    external: true
