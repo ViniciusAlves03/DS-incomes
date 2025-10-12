@@ -18,7 +18,8 @@ import { IncomeRepository } from '../infrastructure/repository/income.repository
 import { IncomesController } from '../ui/controllers/incomes.controller'
 import { CustomLogger, ILogger } from '../utils/custom.logger'
 import { Identifier } from './identifiers'
-import { UsersIncomesController } from 'ui/controllers/users.incomes.controller'
+import { UsersIncomesController } from '../ui/controllers/users.incomes.controller'
+
 
 class IoC {
     private readonly _container: Container
