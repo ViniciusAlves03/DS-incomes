@@ -1,0 +1,367 @@
+openapi: 3.0.0
+info:
+  title: Incomes Service API
+  version: "1.0.0"
+  description: "Microsserviço para gerenciamento de receitas (rendas) dos usuários."
+servers:
+  - url: http://localhost:7000/
+    description: Servidor de desenvolvimento local
+
+paths:
+  /v1/incomes:
+    get:
+      tags:
+        - Incomes
+      summary: Listar todas as Receitas
+      description: Retorna uma lista paginada de todas as receitas registradas no sistema.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Número da página.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Quantidade de itens por página.
+      responses:
+        '200':
+          description: Lista de receitas retornada com sucesso.
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+              description: Número total de receitas.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Income'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /v1/incomes/{income_id}:
+    get:
+      tags:
+        - Incomes
+      summary: Obter Receita por ID
+      description: Retorna os detalhes de uma receita específica.
+      parameters:
+        - name: income_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: mongoId
+      responses:
+        '200':
+          description: Sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '404':
+          description: Receita não encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /v1/users/{user_id}/incomes:
+    post:
+      tags:
+        - Users
+      summary: Adicionar uma nova Receita para um Usuário
+      description: Cria uma nova receita para um usuário específico.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: mongoId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncomeInput'
+      responses:
+        '201':
+          description: Receita criada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '400':
+          description: Requisição inválida.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    get:
+      tags:
+        - Users
+      summary: Listar todas as Receitas de um Usuário
+      description: Retorna uma lista paginada de todas as receitas de um usuário específico.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: mongoId
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Número da página.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Quantidade de itens por página.
+      responses:
+        '200':
+          description: Lista de receitas retornada com sucesso.
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+              description: Número total de receitas para o usuário.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Income'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /v1/users/{user_id}/incomes/{income_id}:
+    get:
+      tags:
+        - Users
+      summary: Obter Receita de um Usuário por ID
+      description: Retorna os detalhes de uma receita específica de um usuário.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: mongoId
+        - name: income_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: mongoId
+      responses:
+        '200':
+          description: Sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '404':
+          description: Receita não encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    patch:
+      tags:
+        - Users
+      summary: Atualizar uma Receita de um Usuário
+      description: Atualiza os dados de uma receita existente de um usuário.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: mongoId
+        - name: income_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: mongoId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncomeUpdate'
+      responses:
+        '200':
+          description: Receita atualizada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '404':
+          description: Receita não encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    delete:
+      tags:
+        - Users
+      summary: Remover uma Receita de um Usuário
+      description: Remove uma receita existente de um usuário.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: mongoId
+        - name: income_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: mongoId
+      responses:
+        '204':
+          description: Receita removida com sucesso.
+        '404':
+          description: Receita não encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+components:
+  schemas:
+    Income:
+      type: object
+      properties:
+        id:
+          type: string
+          format: mongoId
+          readOnly: true
+        title:
+          type: string
+          example: "Salário Mensal"
+        description:
+          type: string
+          example: "Pagamento referente ao mês de Março"
+        amount:
+          type: number
+          example: 3500.00
+        date:
+          type: string
+          format: date
+          example: "2024-03-05"
+        categoryId:
+          type: string
+          format: mongoId
+        userId:
+          type: string
+          format: mongoId
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+
+    IncomeInput:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Venda de produto online"
+        description:
+          type: string
+          example: "Venda de item usado em marketplace"
+        amount:
+          type: number
+          example: 150.00
+        date:
+          type: string
+          format: date
+          example: "2024-03-20"
+        categoryId:
+          type: string
+          format: mongoId
+      required:
+        - title
+        - amount
+
+    IncomeUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+        date:
+          type: string
+          format: date
+        categoryId:
+          type: string
+          format: mongoId
+
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        description:
+          type: string
