@@ -91,6 +91,19 @@ export class UsersIncomesController {
         }
     }
 
+    @httpDelete('/')
+    public async removeMultipleIncomes(@request() req: Request, @response() res: Response): Promise<Response> {
+        try {
+            const incomeIds: Array<string> = req.body.ids
+            await this._incomeService.removeManyIncomes(incomeIds, req.params.user_id);
+            return res.status(HttpStatus.NO_CONTENT).send()
+        } catch (err: any) {
+            const handlerError = ApiExceptionManager.build(err)
+            return res.status(handlerError.code)
+                .send(handlerError.toJSON())
+        }
+    }
+
     private toJSONView(income: Income | Array<Income> | undefined): object {
         if (income instanceof Array) return income.map(item => this.toJSONView(item))
         return income?.toJSON()

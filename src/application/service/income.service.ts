@@ -110,6 +110,18 @@ export class IncomeService implements IIncomeService {
         }
     }
 
+    public async removeManyIncomes(incomeIds: Array<string>, userId: string): Promise<void> {
+        try {
+            incomeIds.forEach(id => ObjectIdValidator.validate(id, Strings.INCOME.PARAM_ID_NOT_VALID_FORMAT))
+            ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT);
+
+            return await this._incomeRepository.deleteManyIncomes(incomeIds, userId);
+        } catch (err) {
+            return Promise.reject(err);
+        }
+    }
+
+
     public async checkUserIncomeExists(userId: string, incomeId: string): Promise<boolean | undefined> {
         try {
             ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT);

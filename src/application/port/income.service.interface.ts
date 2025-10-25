@@ -12,5 +12,7 @@ export interface IIncomeService extends IService<Income> {
 
     removeIncome(userId: string, incomeId: string): Promise<boolean | undefined>
 
+    removeManyIncomes(incomeIds: Array<string>, userId: string): Promise<void>
+
     checkUserIncomeExists(userId: string, incomeId: string): Promise<boolean | undefined>
 }

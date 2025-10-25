@@ -24,6 +24,16 @@ export class IncomeRepository extends BaseRepository<Income, IncomeEntity> imple
         return super.findOne(new Query().fromJSON({ filters: { _id } }))
     }
 
+    public deleteManyIncomes(incomeIds: Array<string>, userId: string): Promise<void> {
+        const query: IQuery = new Query().fromJSON({
+            filters: {
+                _id: { $in: incomeIds },
+                userId: userId
+            }
+        });
+        return super.deleteMany(query);
+    }
+
     public checkUserIncomeExists(userId: string, incomeId: string): Promise<boolean> {
         const query: IQuery = new Query().fromJSON({
             filters: { _id: incomeId, userId: userId }
