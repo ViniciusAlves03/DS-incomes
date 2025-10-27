@@ -6,13 +6,15 @@ export abstract class Identifier {
     public static readonly USERS_INCOMES_CONTROLLER: any = Symbol.for('UsersIncomesController')
 
     // Services
-    public static readonly INCOMES_SERVICE: any = Symbol.for('IncomeService')
+    public static readonly INCOME_SERVICE: any = Symbol.for('IncomeService')
 
     // Repositories
     public static readonly INCOME_REPOSITORY: any = Symbol.for('IncomeRepository')
+    public static readonly INTEGRATION_EVENT_REPOSITORY: any = Symbol.for('IntegrationEventRepository')
 
     // Models
     public static readonly INCOME_REPO_MODEL: any = Symbol.for('IncomeRepoModel')
+    public static readonly INTEGRATION_EVENT_REPO_MODEL: any = Symbol.for('IntegrationEventRepoModel')
 
     // Mappers
     public static readonly INCOME_ENTITY_MAPPER: any = Symbol.for('IncomeEntityMapper')

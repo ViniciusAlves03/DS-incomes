@@ -16,7 +16,7 @@ import { Strings } from '../../utils/strings'
 @controller('/v1/incomes')
 export class IncomesController {
     constructor(
-        @inject(Identifier.INCOMES_SERVICE) private readonly _incomeService: IIncomeService,
+        @inject(Identifier.INCOME_SERVICE) private readonly _incomeService: IIncomeService,
         @inject(Identifier.LOGGER) readonly _logger: ILogger
     ) {
     }
