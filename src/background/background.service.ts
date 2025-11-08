@@ -38,35 +38,37 @@ export class BackgroundService {
         }
     }
 
-    private _startTasks(): void {
-        const rabbitConfigs = Config.getRabbitConfig()
+    private async _startTasks(): Promise<void> {
+        const rabbitConfigs = Config.getRabbitConfig();
 
-        this._eventBus
-            .connectionRpcServer
-            .open(rabbitConfigs.uri, rabbitConfigs.options)
-            .then((conn) => {
-                this._logger.info('RPC Server connection established!')
+        try {
+            const conn = await this._eventBus
+                .connectionRpcServer
+                .open(rabbitConfigs.uri, rabbitConfigs.options);
 
-                conn.on('disconnected', () => this._logger.warn('RPC Server connection has been lost...'))
-                conn.on('reestablished', () => this._logger.info('RPC Server connection re-established!'))
+            this._logger.info('RPC Server connection established!');
+            conn.on('disconnected', () => this._logger.warn('RPC Server connection has been lost...'));
+            conn.on('reestablished', () => this._logger.info('RPC Server connection re-established!'));
 
-                this._rpcServerTask.run()
-            })
-            .catch(err => {
-                this._logger.error(`Error trying to get connection to Event Bus for RPC Server. ${err.message}`)
-            })
+            this._rpcServerTask.run();
 
-        this._eventBus
-            .connectionRpcClient
-            .open(rabbitConfigs.uri, rabbitConfigs.options)
-            .then((conn) => {
-                this._logger.info('RPC Client connection established!')
+        } catch (err: unknown) {
+            const error = err as Error;
+            this._logger.error(`Error trying to get connection to Event Bus for RPC Server. ${error.message}`);
+        }
 
-                conn.on('disconnected', () => this._logger.warn('RPC Client connection has been lost...'))
-                conn.on('reestablished', () => this._logger.info('RPC Client connection re-established!'))
-            })
-            .catch(err => {
-                this._logger.error(`Error trying to get connection to Event Bus for RPC Client. ${err.message}`)
-            })
+        try {
+            const conn = await this._eventBus
+                .connectionRpcClient
+                .open(rabbitConfigs.uri, rabbitConfigs.options);
+
+            this._logger.info('RPC Client connection established!');
+            conn.on('disconnected', () => this._logger.warn('RPC Client connection has been lost...'));
+            conn.on('reestablished', () => this._logger.info('RPC Client connection re-established!'));
+
+        } catch (err: unknown) {
+            const error = err as Error;
+            this._logger.error(`Error trying to get connection to Event Bus for RPC Client. ${error.message}`);
+        }
     }
 }

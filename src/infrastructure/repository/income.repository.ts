@@ -34,15 +34,16 @@ export class IncomeRepository extends BaseRepository<Income, IncomeEntity> imple
         return super.deleteMany(query);
     }
 
-    public checkUserIncomeExists(userId: string, incomeId: string): Promise<boolean> {
+    public async checkUserIncomeExists(userId: string, incomeId: string): Promise<boolean> {
         const query: IQuery = new Query().fromJSON({
             filters: { _id: incomeId, userId: userId }
         })
 
-        return new Promise<boolean>((resolve, reject) => {
-            super.findOne(query)
-                .then(result => resolve(!!result))
-                .catch(err => reject(super.mongoDBErrorListener(err)))
-        })
+        try {
+            const result = await super.findOne(query)
+            return !!result
+        } catch (err: unknown) {
+            throw super.mongoDBErrorListener(err)
+        }
     }
 }

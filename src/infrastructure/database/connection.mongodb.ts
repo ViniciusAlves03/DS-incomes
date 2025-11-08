@@ -24,22 +24,23 @@ export class ConnectionMongodb implements IConnectionDB {
     }
 
     public async tryConnect(uri: string, options?: IDBOptions): Promise<void> {
-        const _this = this
-        await this._connectionFactory.createConnection(uri, options)
-            .then((connection: Connection) => {
-                this._connection = connection
-                this.connectionStatusListener(this._connection)
-                this._eventConnection.emit('connected')
-                this._logger.info('MongoDB connection established!')
-            })
-            .catch((err) => {
-                this._connection = undefined
-                this._eventConnection.emit('disconnected')
-                this._logger.warn(`Error trying to connect for the first time with mongoDB: ${err.message}`)
-                setTimeout(async () => {
-                    _this.tryConnect(uri, options).then()
-                }, 2000)
-            })
+        try {
+            const connection: Connection = await this._connectionFactory.createConnection(uri, options);
+
+            this._connection = connection;
+            this.connectionStatusListener(this._connection);
+            this._eventConnection.emit('connected');
+            this._logger.info('MongoDB connection established!');
+        } catch (err: unknown) {
+            const error = err as Error;
+            this._connection = undefined;
+            this._eventConnection.emit('disconnected');
+            this._logger.warn(`Error trying to connect for the first time with mongoDB: ${error.message}`);
+
+            setTimeout(() => {
+                this.tryConnect(uri, options);
+            }, 2000);
+        }
     }
 
     private connectionStatusListener(connection: Connection | undefined): void {

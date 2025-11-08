@@ -35,30 +35,39 @@ export class EventBusRabbitMQ implements IEventBus {
     }
 
     public async publish(event: IntegrationEvent<any>, routingKey: string): Promise<boolean> {
-        return new Promise<boolean>(async (resolve, reject) => {
-            if (!this.connectionPub.isOpen) return reject(new EventBusException('No connection open!'))
+        if (!this.connectionPub.isOpen) {
+            throw new EventBusException('No connection open!')
+        }
 
+        try {
             const message = { content: event.toJSON() }
-            this.connectionPub
+            await this.connectionPub
                 .publish(event.type, routingKey, message, {
                     exchange: {
                         type: 'topic',
                         durable: true
                     }
                 })
-                .then(() => resolve(true))
-                .catch(reject)
-        })
+            return true
+        } catch (err: unknown) {
+            throw err
+        }
     }
 
     public async subscribe(event: IntegrationEvent<any>, handler: IIntegrationEventHandler<IntegrationEvent<any>>,
         routingKey: string): Promise<boolean> {
-        return new Promise<boolean>(async (resolve, reject) => {
-            if (!this.connectionSub.isOpen) return reject(new EventBusException('No connection open!'))
-            if (this._event_handlers.has(event.event_name)) return resolve(true)
 
-            this._event_handlers.set(event.event_name, handler)
-            this.connectionSub
+        if (!this.connectionSub.isOpen) {
+            throw new EventBusException('No connection open!')
+        }
+        if (this._event_handlers.has(event.event_name)) {
+            return true
+        }
+
+        this._event_handlers.set(event.event_name, handler)
+
+        try {
+            await this.connectionSub
                 .subscribe(this.RABBITMQ_QUEUE_NAME, event.type, routingKey, (message) => {
                     message.ack()
 
@@ -72,7 +81,8 @@ export class EventBusRabbitMQ implements IEventBus {
                     exchange: {
                         type: 'topic',
                         durable: true
-                    }, queue: {
+                    },
+                    queue: {
                         durable: true
                     },
                     consumer: {
@@ -80,27 +90,27 @@ export class EventBusRabbitMQ implements IEventBus {
                     },
                     receiveFromYourself: this._receiveFromYourself
                 })
-                .then(() => {
-                    resolve(true)
-                })
-                .catch(reject)
-        })
+
+            return true
+        } catch (err: unknown) {
+            throw err
+        }
     }
 
-    public provideResource(name: string, resource: (...any) => any): Promise<boolean> {
-        return new Promise<boolean>(async (resolve, reject) => {
-            if (!this.connectionRpcServer.isOpen) {
-                return reject(new EventBusException('No connection open!'))
-            }
+    public async provideResource(name: string, resource: (...any) => any): Promise<boolean> {
+        if (!this.connectionRpcServer.isOpen) {
+            throw new EventBusException('No connection open!')
+        }
 
-            this.initializeRPCServer()
-            this._rpcServer.addResource(name, resource)
+        this.initializeRPCServer()
+        this._rpcServer.addResource(name, resource)
 
-            this._rpcServer
-                .start()
-                .then(() => resolve(true))
-                .catch(reject)
-        })
+        try {
+            await this._rpcServer.start()
+            return true
+        } catch (err: unknown) {
+            throw err
+        }
     }
 
     public executeResource(serviceName: string, resourceName: string, ...params: any[]): Promise<any> {

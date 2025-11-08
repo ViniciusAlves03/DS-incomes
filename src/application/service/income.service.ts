@@ -22,21 +22,22 @@ export class IncomeService implements IIncomeService {
         throw new Error('Method not implemented.')
     }
 
-    getAll(query: IQuery): Promise<Income[]> {
+    public async getAll(query: IQuery): Promise<Array<Income>> {
         try {
             return this._incomeRepository.find(query)
-        } catch (err) {
-            return Promise.reject(err)
+        } catch (err: unknown) {
+            throw err
         }
     }
 
-    getById(id: string, query: IQuery): Promise<Income | undefined> {
+    public async getById(id: string, query: IQuery): Promise<Income | undefined> {
         try {
             ObjectIdValidator.validate(id);
             query.addFilter({ _id: id })
+
             return this._incomeRepository.findOne(query)
-        } catch (err) {
-            return Promise.reject(err)
+        } catch (err: unknown) {
+            throw err
         }
     }
 
@@ -44,12 +45,12 @@ export class IncomeService implements IIncomeService {
         try {
             UpdateIncomeValidator.validate(item)
 
-            const incomeExists: boolean | undefined = await this.checkUserIncomeExists(item.userId!, item.id!);
-            if (!incomeExists) return Promise.resolve(undefined)
+            const incomeExists = await this.checkUserIncomeExists(item.userId!, item.id!);
+            if (!incomeExists) return undefined
 
             return this._incomeRepository.update(item)
-        } catch (err) {
-            return Promise.reject(err);
+        } catch (err: unknown) {
+            throw err;
         }
     }
 
@@ -57,11 +58,11 @@ export class IncomeService implements IIncomeService {
         throw new Error('Method not implemented.')
     }
 
-    count(query: IQuery): Promise<number> {
+    public async count(query: IQuery): Promise<number> {
         try {
             return this._incomeRepository.count(query)
-        } catch (err) {
-            return Promise.reject(err)
+        } catch (err: unknown) {
+            throw err
         }
     }
 
@@ -69,44 +70,40 @@ export class IncomeService implements IIncomeService {
         try {
             item.userId = userId
             CreateIncomeValidator.validate(item)
-            const result: Income | undefined = await this._incomeRepository.create(item)
-            return Promise.resolve(result)
-        } catch (err) {
-            return Promise.reject(err)
+
+            return this._incomeRepository.create(item)
+        } catch (err: unknown) {
+            throw err
         }
     }
 
     public async getAllIncomesByUser(query: IQuery): Promise<Array<any>> {
         try {
-            const user_id = query.toJSON().filters.user_id
-            if (user_id) ObjectIdValidator.validate(user_id)
-            const incomes: Array<any> = await this._incomeRepository.find(query)
-            return Promise.resolve(incomes)
-        } catch (err) {
-            return Promise.reject(err)
+            return this._incomeRepository.find(query)
+        } catch (err: unknown) {
+            throw err
         }
     }
 
     public async getIncomeById(incomeId: string, query: IQuery): Promise<Income | undefined> {
         try {
-            const user_id = query.toJSON().filters.user_id
-            if (user_id) ObjectIdValidator.validate(user_id)
             ObjectIdValidator.validate(incomeId);
             query.addFilter({ _id: incomeId })
+
             return this._incomeRepository.findOne(query)
-        } catch (err) {
-            return Promise.reject(err)
+        } catch (err: unknown) {
+            throw err
         }
     }
 
     public async removeIncome(userId: string, incomeId: string): Promise<boolean | undefined> {
         try {
-            const incomeExists: boolean | undefined = await this.checkUserIncomeExists(userId, incomeId);
-            if (!incomeExists) return Promise.resolve(undefined)
+            const incomeExists = await this.checkUserIncomeExists(userId, incomeId);
+            if (!incomeExists) return undefined
 
             return this._incomeRepository.delete(incomeId)
-        } catch (err) {
-            return Promise.reject(err)
+        } catch (err: unknown) {
+            throw err
         }
     }
 
@@ -116,18 +113,17 @@ export class IncomeService implements IIncomeService {
             ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT);
 
             return await this._incomeRepository.deleteManyIncomes(incomeIds, userId);
-        } catch (err) {
-            return Promise.reject(err);
+        } catch (err: unknown) {
+            throw err;
         }
     }
-
 
     public async checkUserIncomeExists(userId: string, incomeId: string): Promise<boolean | undefined> {
         try {
             ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT);
             ObjectIdValidator.validate(incomeId, Strings.INCOME.PARAM_ID_NOT_VALID_FORMAT);
 
-            const checkUserIncomeExists: boolean | undefined =
+            const checkUserIncomeExists =
                 await this._incomeRepository.checkUserIncomeExists(userId, incomeId);
 
             if (!checkUserIncomeExists) {
@@ -138,8 +134,8 @@ export class IncomeService implements IIncomeService {
             }
 
             return checkUserIncomeExists
-        } catch (err) {
-            return Promise.reject(err)
+        } catch (err: unknown) {
+            throw err
         }
     }
 }

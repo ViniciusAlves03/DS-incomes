@@ -14,6 +14,8 @@ import { ApiException } from './ui/exception/api.exception'
 import { ILogger } from './utils/custom.logger'
 import { Default } from './utils/default'
 import { Strings } from './utils/strings'
+import { ApiExceptionManager } from './ui/exception/api.exception.manager'
+import { Exception } from './application/domain/exception/exception'
 
 
 @injectable()
@@ -81,17 +83,28 @@ export class App {
             res.status(HttpStatus.NOT_FOUND).send(errorMessage.toJSON())
         })
 
-        // Handle 400, 500
+        // Handle 400, 409, 500...
         this.express.use((err: any, req: Request, res: Response, next: NextFunction) => {
-            let statusCode = HttpStatus.INTERNAL_SERVER_ERROR
-            const errorMessage: ApiException = new ApiException(statusCode, err.message)
-            if (err && err.statusCode === HttpStatus.BAD_REQUEST) {
-                statusCode = HttpStatus.BAD_REQUEST
-                errorMessage.code = statusCode
-                errorMessage.message = Strings.ERROR_MESSAGE.REQUEST_BODY_INVALID
-                errorMessage.description = Strings.ERROR_MESSAGE.REQUEST_BODY_INVALID_DESC
+            let apiException: ApiException;
+
+            this._logger.error(err.stack || err.message)
+
+            if (err instanceof Exception) {
+                apiException = ApiExceptionManager.build(err);
+            } else if (err && err.statusCode === HttpStatus.BAD_REQUEST) {
+                apiException = new ApiException(
+                    HttpStatus.BAD_REQUEST,
+                    Strings.ERROR_MESSAGE.REQUEST_BODY_INVALID,
+                    Strings.ERROR_MESSAGE.REQUEST_BODY_INVALID_DESC
+                );
+            } else {
+                apiException = new ApiException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    Strings.ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                    err.message
+                );
             }
-            res.status(statusCode).send(errorMessage.toJSON())
+            res.status(apiException.code).send(apiException.toJSON())
         })
     }
 }
