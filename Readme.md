@@ -60,7 +60,7 @@ Este método é o mais simples, pois usa o Dockerfile para executar a aplicaçã
 
 1.  **Clone o repositório:**
     ```bash
-    git clone [https://github.com/ViniciusAlves03/DS-incomes.git](https://github.com/ViniciusAlves03/DS-incomes.git)
+    git clone https://github.com/ViniciusAlves03/DS-incomes.git
     cd DS-incomes
     ```
 
